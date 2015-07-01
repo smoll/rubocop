@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'parallel'
+
 module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
@@ -48,7 +50,7 @@ module RuboCop
 
       formatter_set.started(files)
 
-      files.each do |file|
+      Parallel.each(files) do |file|
         break if aborting?
         offenses = process_file(file)
         all_passed = false if offenses.any? { |o| considered_failure?(o) }
